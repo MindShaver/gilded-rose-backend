@@ -1,5 +1,6 @@
 using GildedRose.Repository;
 using GildedRose.Repository.Commands.Items;
+using GildedRose.Repository.Queries.Items;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -46,6 +47,7 @@ namespace GildedRose.API
         {
             //serviceCollection.AddTransient<IGetPagedProductsQuery, GetPagedProductsQuery>();
             serviceCollection.AddTransient<ISeedItemsCommand, SeedItemsCommand>();
+            serviceCollection.AddTransient<IGetAllItemsQuery, GetAllItemsQuery>();
         }
 
         private static void RegisterDependencies(IServiceCollection serviceCollection)

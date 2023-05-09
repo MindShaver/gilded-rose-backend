@@ -19,10 +19,10 @@ namespace GildedRose.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            //TODO: Get all items using Mediator
-            var items = new List<Item>();
+            var request = new GetAllItemsRequest();
+            var items = await _mediatr.Send(request);
 
-            return await Task.FromResult(Ok(items));
+            return Ok(items);
         }
 
         [HttpPost]
