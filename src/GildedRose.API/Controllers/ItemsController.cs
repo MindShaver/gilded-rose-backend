@@ -1,4 +1,5 @@
-﻿using GildedRose.Repository.Models;
+﻿using GildedRose.API.Requests.Items;
+using GildedRose.Repository.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,6 +42,8 @@ namespace GildedRose.API.Controllers
             };
 
             // TODO: Check to see if there are already items in the database. If yes - do nothing. If no - add items to DB
+            var request = new SeedItemsRequest(items);
+            await _mediatr.Send(request);
 
             return await Task.FromResult(Ok(items));
         }
