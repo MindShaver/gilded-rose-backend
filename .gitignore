@@ -1,0 +1,55 @@
+# .gitignore
+
+# C# build and output files
+bin/
+obj/
+*.suo
+*.user
+*.sln.docstates
+*.cache
+*.bak
+
+# Visual Studio Code
+.vscode/
+
+# Visual Studio
+*.sln
+*.suo
+*.dbmdl
+*.user
+*.vsp
+*.vspscc
+*.vssscc
+.ipch/
+*.ncb
+*.bak
+*.bak.*
+*.dbmdl
+*.csproj.user
+
+# ReSharper
+_ReSharper.*
+*.ReSharper
+*.ReSharper.*
+*.DotSettings
+
+# macOS
+.DS_Store
+__MACOSX/
+
+# Docker
+.env
+
+# JetBrains Rider
+.idea/
+
+# Miscellaneous
+*.log
+*.bak
+*.bak.*
+*.swp
+*.swx
+*.tmp
+*.un~
+Thumbs.db
+UserInterfaceState.xcuserstate

@@ -1,0 +1,5 @@
+﻿{
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;port=5432;Username=postgres;Password=password;Database=gilded-db;"
+  }
+}

@@ -1,0 +1,40 @@
+version: "3.1"
+
+services:
+  db:
+    image: postgres:13-alpine
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: gilded-db
+      POSTGRES_PASSWORD: password
+
+  migrate-db:
+    build:
+      context: .
+      dockerfile: ./RepositoryMigrations.Dockerfile
+    depends_on:
+      - db
+    restart: "no"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    entrypoint:
+      [
+        "/bundler/bundle",
+        "--connection",
+        "Host=db;port=5432;Username=postgres;Password=password;Database=gilded-db;",
+      ]
+
+  gilded:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    depends_on:
+      - db
+    restart: "always"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Access__Postgres: "Host=db;port=5432;Username=postgres;Password=password;Database=gilded-db;"
+    ports:
+      - "8888:80"
