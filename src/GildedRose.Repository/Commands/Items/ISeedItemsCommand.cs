@@ -4,8 +4,8 @@ using MediatR;
 
 namespace GildedRose.Repository.Commands.Items
 {
-    public interface ISeedItemsCommand : ICommand<List<Item>, Unit>
+    public interface ISeedItemsCommand : ICommand<IList<Item>, Unit>
     {
-        new Task<Unit> ExecuteAsync(List<Item> itemsToSeed, CancellationToken cancellationToken = default);
+        new Task<Unit> ExecuteAsync(IList<Item> itemsToSeed, CancellationToken cancellationToken = default);
     }
 }

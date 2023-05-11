@@ -49,6 +49,7 @@ namespace GildedRose.API
             serviceCollection.AddTransient<ISeedItemsCommand, SeedItemsCommand>();
             serviceCollection.AddTransient<IGetAllItemsQuery, GetAllItemsQuery>();
             serviceCollection.AddTransient<IDeleteAllItemsCommand, DeleteAllItemsCommand>();
+            serviceCollection.AddTransient<IUpdateProcessedItemsCommand, UpdateProcessedItemsCommand>();
         }
 
         private static void RegisterDependencies(IServiceCollection serviceCollection)

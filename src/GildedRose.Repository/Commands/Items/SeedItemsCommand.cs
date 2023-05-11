@@ -12,7 +12,7 @@ namespace GildedRose.Repository.Commands.Items
             _context = context;
         }
 
-        public async Task<Unit> ExecuteAsync(List<Item> itemsToSeed, CancellationToken cancellationToken = default)
+        public async Task<Unit> ExecuteAsync(IList<Item> itemsToSeed, CancellationToken cancellationToken = default)
         {
             await _context.Items.AddRangeAsync(itemsToSeed, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);

@@ -1,4 +1,5 @@
 ﻿using GildedRose.API.Engine;
+using GildedRose.API.Requests.Items;
 using GildedRose.Repository.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -6,11 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace GildedRose.API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("process")]
     public class DailyProcessController : ControllerBase
     {
         private IMediator _mediator;
-        private DailyProcessor _processor;
+        private readonly DailyProcessor _processor;
 
         public DailyProcessController(IMediator mediator)
         {
@@ -22,13 +23,16 @@ namespace GildedRose.API.Controllers
         public async Task<IActionResult> DailyProcess()
         {
             // TODO: Get all items from Mediator
-            var items = new List<Item>();
+            var getAllItemsRequest = new GetAllItemsRequest();
+            var items = await _mediator.Send(getAllItemsRequest);
 
-            _processor.UpdateQuality(items);
+            _processor.UpdateQuality(items.ToList());
 
             // TODO: Update all items using Mediator
+            var processRequest = new UpdateProcessedItemsRequest(items);
+            await _mediator.Send(processRequest);
 
-            return await Task.FromResult(Ok());
+            return Ok(items);
         }
     }
 }
