@@ -25,6 +25,18 @@ namespace GildedRose.API.Controllers
             return Ok(items);
         }
 
+        [HttpDelete]
+        public async Task<IActionResult> DeleteAll()
+        {
+            var getAllItemsRequest = new GetAllItemsRequest();
+            var itemsToDelete = await _mediatr.Send(getAllItemsRequest);
+
+            var deleteAllItemsRequest = new DeleteAllItemsRequest(itemsToDelete);
+            await _mediatr.Send(deleteAllItemsRequest);
+
+            return NoContent();
+        }
+
         [HttpPost]
         public async Task<IActionResult> SeedData()
         {
