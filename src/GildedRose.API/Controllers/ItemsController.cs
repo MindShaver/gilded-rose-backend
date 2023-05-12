@@ -1,4 +1,5 @@
-﻿using GildedRose.API.Requests.Items;
+﻿using GildedRose.API.ApiRequests.Items;
+using GildedRose.API.Requests.Items;
 using GildedRose.Repository.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -9,35 +10,65 @@ namespace GildedRose.API.Controllers
     [Route("[controller]")]
     public class ItemsController : ControllerBase
     {
-        private IMediator _mediatr;
+        private IMediator _mediator;
 
-        public ItemsController(IMediator mediatr)
+        public ItemsController(IMediator mediator)
         {
-            _mediatr = mediatr;
+            _mediator = mediator;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var request = new GetAllItemsRequest();
-            var items = await _mediatr.Send(request);
+            var items = await _mediator.Send(request);
 
             return Ok(items);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var request = new GetItemByIdRequest(id);
+
+            var item = await _mediator.Send(request);
+
+            return Ok(item);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteById(Guid id)
+        {
+            var request = new DeleteItemByIdRequest(id);
+
+            await _mediator.Send(request);
+
+            return NoContent();
         }
 
         [HttpDelete]
         public async Task<IActionResult> DeleteAll()
         {
             var getAllItemsRequest = new GetAllItemsRequest();
-            var itemsToDelete = await _mediatr.Send(getAllItemsRequest);
+            var itemsToDelete = await _mediator.Send(getAllItemsRequest);
 
             var deleteAllItemsRequest = new DeleteAllItemsRequest(itemsToDelete);
-            await _mediatr.Send(deleteAllItemsRequest);
+            await _mediator.Send(deleteAllItemsRequest);
 
             return NoContent();
         }
 
         [HttpPost]
+        public async Task<IActionResult> Create([FromBody] PostItemRequest request)
+        {
+            var itemToCreate = new Item(request.Name, request.Quantity, request.Quantity, request.Sellin);
+            var createRequest = new CreateItemRequest(itemToCreate);
+            var response = await _mediator.Send(createRequest);
+
+            return Created("", "");
+        }
+
+        [HttpPost("/seed")]
         public async Task<IActionResult> SeedData()
         {
             var items = new List<Item>
@@ -55,7 +86,7 @@ namespace GildedRose.API.Controllers
 
             // TODO: Check to see if there are already items in the database. If yes - do nothing. If no - add items to DB
             var request = new SeedItemsRequest(items);
-            await _mediatr.Send(request);
+            await _mediator.Send(request);
 
             return await Task.FromResult(Ok(items));
         }

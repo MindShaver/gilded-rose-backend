@@ -22,13 +22,11 @@ namespace GildedRose.API.Controllers
         [HttpPost]
         public async Task<IActionResult> DailyProcess()
         {
-            // TODO: Get all items from Mediator
             var getAllItemsRequest = new GetAllItemsRequest();
             var items = await _mediator.Send(getAllItemsRequest);
 
             _processor.UpdateQuality(items.ToList());
 
-            // TODO: Update all items using Mediator
             var processRequest = new UpdateProcessedItemsRequest(items);
             await _mediator.Send(processRequest);
 
