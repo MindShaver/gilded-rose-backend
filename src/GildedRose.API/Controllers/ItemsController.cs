@@ -10,68 +10,132 @@ namespace GildedRose.API.Controllers
     [Route("[controller]")]
     public class ItemsController : ControllerBase
     {
-        private IMediator _mediator;
+        private readonly IMediator _mediator;
 
         public ItemsController(IMediator mediator)
         {
-            _mediator = mediator;
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var request = new GetAllItemsRequest();
-            var items = await _mediator.Send(request);
+            try
+            {
+                var request = new GetAllItemsRequest();
+                var items = await _mediator.Send(request);
 
-            return Ok(items);
+                return Ok(items);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex}");
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var request = new GetItemByIdRequest(id);
+            try
+            {
+                var request = new GetItemByIdRequest(id);
+                var item = await _mediator.Send(request);
 
-            var item = await _mediator.Send(request);
+                if (item != null)
+                {
+                    return Ok(item);
+                }
 
-            return Ok(item);
+                return NotFound($"Item with id - {id} not found.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex}");
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteById(Guid id)
         {
-            var request = new DeleteItemByIdRequest(id);
+            try
+            {
+                var request = new DeleteItemByIdRequest(id);
+                await _mediator.Send(request);
 
-            await _mediator.Send(request);
-
-            return NoContent();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex}");
+            }
         }
 
         [HttpDelete]
         public async Task<IActionResult> DeleteAll()
         {
-            var getAllItemsRequest = new GetAllItemsRequest();
-            var itemsToDelete = await _mediator.Send(getAllItemsRequest);
+            try
+            {
+                var getAllItemsRequest = new GetAllItemsRequest();
+                var itemsToDelete = await _mediator.Send(getAllItemsRequest);
 
-            var deleteAllItemsRequest = new DeleteAllItemsRequest(itemsToDelete);
-            await _mediator.Send(deleteAllItemsRequest);
+                var deleteAllItemsRequest = new DeleteAllItemsRequest(itemsToDelete);
+                await _mediator.Send(deleteAllItemsRequest);
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex}");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] PostItemRequest request)
         {
-            var itemToCreate = new Item(request.Name, request.Quantity, request.Quantity, request.Sellin);
-            var createRequest = new CreateItemRequest(itemToCreate);
-            var response = await _mediator.Send(createRequest);
+            try
+            {
+                var itemToCreate = new Item(request.Name, request.Quantity, request.Quantity, request.Sellin);
+                var createRequest = new CreateItemRequest(itemToCreate);
+                var response = await _mediator.Send(createRequest);
 
-            return Created("", "");
+                // Assuming that the response contains the id of the newly created item.
+                return CreatedAtAction(nameof(GetById), new { id = itemToCreate.Id }, itemToCreate);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex}");
+            }
         }
 
-        [HttpPost("/seed")]
+        [HttpPost("~/seed")]
         public async Task<IActionResult> SeedData()
         {
-            var items = new List<Item>
+            try
+            {
+                var request = new GetAllItemsRequest();
+                var items = await _mediator.Send(request);
+
+                if (items.Any())
+                {
+                    return Ok();
+                }
+
+                var seedItems = GetSeedItems();
+
+                var seedRequest = new SeedItemsRequest(seedItems);
+                await _mediator.Send(seedRequest);
+
+                return Ok(items);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex}");
+            }
+        }
+
+        private List<Item> GetSeedItems()
+        {
+            return new List<Item>
             {
                 new Item("Regular Item", quantity: 10, quality: 20, sellIn: 15),
                 new Item("Aged Brie", quantity: 5, quality: 25, sellIn: 10),
@@ -83,12 +147,10 @@ namespace GildedRose.API.Controllers
                 new Item("Aged Brie", quantity: 5, quality: 25, sellIn: -2),
                 new Item("Backstage passes to a TAFKAL80ETC concert", quantity: 5, quality: 30, sellIn: -3)
             };
-
-            // TODO: Check to see if there are already items in the database. If yes - do nothing. If no - add items to DB
-            var request = new SeedItemsRequest(items);
-            await _mediator.Send(request);
-
-            return await Task.FromResult(Ok(items));
         }
     }
 }
+ 
+
+
+
