@@ -12,7 +12,7 @@
 
 Go to the [repository](https://github.com/MindShaver/gilded-rose-backend) and click the big `<> Code` button.
 
-// Add image of clone link
+![image](https://github.com/MindShaver/gilded-rose-backend/assets/16137173/c22371b1-7763-4b8f-a668-a301fa44df5b)
 
 Create a new folder on your desktop and name it `Repositories`.
 
