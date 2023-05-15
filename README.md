@@ -36,13 +36,21 @@ Make sure you are in the correct folder inside of Git Bash. It should say someth
 
 Make sure Docker Desktop is running and run the command `docker-compose build`. This should run for a minute and spit out a lot of logs.
 
+![image](https://github.com/MindShaver/gilded-rose-backend/assets/16137173/117b9d37-9e6d-4d9f-953f-a2bc37f5170b)
+
 Once it is done you are ready to run the containers. Start them by using the commmand `docker-compose up`.
 
+![image](https://github.com/MindShaver/gilded-rose-backend/assets/16137173/38c25414-9e16-45e9-9c80-675c1169fc5a)
+
 You must leave the Git Bash terminal running for as long as you want the API running. If you close the terminal it will stop the application.
+
+![image](https://github.com/MindShaver/gilded-rose-backend/assets/16137173/16b7fc5b-0f4d-44ef-ad0f-bcad08820fb7)
 
 You can stop the application by pressing Ctrl+C in the Git Bash terminal.
 
 To verify that application is running open Mozilla and navigate to `http://localhost:8888/swagger/index.html`. This is the Swagger Documentation for the API. You'll use this to interact with the API and test "endpoints".
+
+![image](https://github.com/MindShaver/gilded-rose-backend/assets/16137173/0beeefca-e324-47b4-afef-5974f5074fd9)
 
 Now, onto viewing our Database.
 
@@ -50,7 +58,7 @@ Now, onto viewing our Database.
 
 At this point you should have the application running. You can open Docker Desktop and see two containers with green statuses -
 
-// Insert picture of Docker Desktop
+![image](https://github.com/MindShaver/gilded-rose-backend/assets/16137173/91e6d97f-c786-4a1a-9995-5995c26140ca)
 
 Open DBeaver.
 
@@ -62,9 +70,13 @@ Click the "Add New Database" button and select `PostgreSQL` as the database.
 `Username = postgres`
 `Password = password`
 
+![image](https://github.com/MindShaver/gilded-rose-backend/assets/16137173/c622ce52-9880-4e8a-9669-976fcfe3ddcc)
+
 Click the Test Connection button to verify there is a connection. Click Finish and you should see a new database in the navigation window named gilded-db.
 
 Expand the arrow: `gilded-db -> Databases -> gilded-db -> Schemas -> public -> tables`
+
+![image](https://github.com/MindShaver/gilded-rose-backend/assets/16137173/87e6380b-8e2b-4364-9122-b2f5473c2dfa)
 
 Right click on the Items table and click "View Data". You should see an empty table with columns labeled - `Id - Name - Sellin - Quality - etc..`
 
@@ -74,13 +86,19 @@ Onto the last step for now - Seeding the Database and verifying.
 
 With the docker containers still running open Mozilla and go to Swagger - `http://localhost:8888/swagger/index.html`
 
-Scroll down to the POST Seed line and expand it. Click the Try It Out! button. Click the Execute button.
+Scroll down to the POST Seed line and expand it. Click the "Try It Out" button. Click the Execute button.
+
+![image](https://github.com/MindShaver/gilded-rose-backend/assets/16137173/867e65b5-a26c-4d90-8b04-a1e690f9964c)
 
 This fires off a request to add some fake data to our database. Let's go back to DBeaver and verify.
 
 Right click on our `Items` table and click "View Data". If nothing shows up right click the "Items" table and click "Refresh". The default items should now show up in the table.
 
+![image](https://github.com/MindShaver/gilded-rose-backend/assets/16137173/fcce94c2-1dd2-4a8a-a9d2-6c4cacdf5407)
+
 Lastly, lets go back to swagger and expand the `GET /Items` line. Click "Try it out" and "Execute". You should see a response containing all the items you just saw in the database as JSON.
+
+![image](https://github.com/MindShaver/gilded-rose-backend/assets/16137173/49288e55-f583-4dcb-9ceb-9f6d5f67f188)
 
 ### Conclusion
 
