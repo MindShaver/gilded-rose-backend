@@ -3,6 +3,7 @@ using GildedRose.API.Requests.Items;
 using GildedRose.Repository.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace GildedRose.API.Controllers
 {
@@ -18,6 +19,13 @@ namespace GildedRose.API.Controllers
         }
 
         [HttpGet]
+        [SwaggerOperation(
+            Summary = "Retrieves all items.",
+            Description = "Retrieves a list of all items in the inventory.",
+            OperationId = "GetAllItems"
+        )]
+        [SwaggerResponse(200, "Returns a list of all items.", typeof(IEnumerable<Item>))]
+        [SwaggerResponse(500, "If there is an internal server error.")]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -34,6 +42,14 @@ namespace GildedRose.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [SwaggerOperation(
+            Summary = "Retrieves a single item by ID.",
+            Description = "Retrieves the details of a single item in the inventory by its ID.",
+            OperationId = "GetItemById"
+        )]
+        [SwaggerResponse(200, "Returns the item with the provided ID.", typeof(Item))]
+        [SwaggerResponse(404, "If an item with the provided ID is not found.")]
+        [SwaggerResponse(500, "If there is an internal server error.")]
         public async Task<IActionResult> GetById(Guid id)
         {
             try
@@ -55,6 +71,13 @@ namespace GildedRose.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [SwaggerOperation(
+             Summary = "Deletes an item by its ID.",
+             Description = "Deletes an item from the inventory by its ID.",
+             OperationId = "DeleteItemById"
+         )]
+        [SwaggerResponse(204, "Item is successfully deleted.")]
+        [SwaggerResponse(500, "If there is an internal server error.")]
         public async Task<IActionResult> DeleteById(Guid id)
         {
             try
@@ -71,6 +94,9 @@ namespace GildedRose.API.Controllers
         }
 
         [HttpDelete]
+        [SwaggerOperation(Summary = "Delete all items", Description = "Deletes all items from the inventory.")]
+        [SwaggerResponse(204, "All items are successfully deleted.")]
+        [SwaggerResponse(500, "If there is an internal server error.")]
         public async Task<IActionResult> DeleteAll()
         {
             try
@@ -90,6 +116,9 @@ namespace GildedRose.API.Controllers
         }
 
         [HttpPost]
+        [SwaggerOperation(Summary = "Create a new item", Description = "Creates a new item in the inventory.")]
+        [SwaggerResponse(201, "The item was successfully created.", typeof(Item))]
+        [SwaggerResponse(500, "If there is an internal server error.")]
         public async Task<IActionResult> Create([FromBody] PostItemRequest request)
         {
             try
@@ -108,6 +137,9 @@ namespace GildedRose.API.Controllers
         }
 
         [HttpPost("~/seed")]
+        [SwaggerOperation(Summary = "Seed database with predefined items", Description = "Seeds the database with a predefined list of items.")]
+        [SwaggerResponse(200, "The database was successfully seeded.", typeof(IEnumerable<Item>))]
+        [SwaggerResponse(500, "If there is an internal server error.")]
         public async Task<IActionResult> SeedData()
         {
             try

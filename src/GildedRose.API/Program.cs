@@ -3,6 +3,8 @@ using GildedRose.Repository.Commands.Items;
 using GildedRose.Repository.Queries.Items;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace GildedRose.API
 {
@@ -18,6 +20,16 @@ namespace GildedRose.API
             optionsBuilder.UseNpgsql(connectionString ?? "Host=localhost")
             );
 
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Gilded Rose API", Version = "v1" });
+
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
+
             // Add services to the container.
             RegisterQueries(builder.Services);
             RegisterDependencies(builder.Services);
@@ -28,20 +40,35 @@ namespace GildedRose.API
             builder.Services.AddControllers();
             builder.Services.AddMediatR(typeof(Program).Assembly);
 
-
             var app = builder.Build();
-            startup.Configure(app, builder.Environment);
 
             // Configure the HTTP request pipeline.
-
             app.UseHttpsRedirection();
+            app.UseRouting();
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Gilded Rose API V1");
+            });
 
             app.UseAuthorization();
+            startup.Configure(app, builder.Environment);
 
             app.MapControllers();
 
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+
             app.Run();
         }
+
 
         private static void RegisterQueries(IServiceCollection serviceCollection)
         {
@@ -57,7 +84,7 @@ namespace GildedRose.API
 
         private static void RegisterDependencies(IServiceCollection serviceCollection)
         {
-            //serviceCollection.AddTransient<IJsonApiLinkFactory, JsonApiLinkFactory>();
+            
         }
 
         private static IConfiguration BuildConfiguration()
