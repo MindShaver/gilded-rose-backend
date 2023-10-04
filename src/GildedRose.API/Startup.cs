@@ -18,6 +18,7 @@ namespace GildedRose.API
         public void ConfigureServices(IServiceCollection services)
         {
             _services = services;
+            services.AddCors();
             // Register the ECommerceDbContext with PostgreSQL
             services.AddDbContext<GildedDbContext>(options =>
                 options.UseNpgsql(_configuration.GetConnectionString("DefaultConnection")));
